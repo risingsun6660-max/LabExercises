@@ -1,0 +1,965 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio - Single Page Application</title>
+    <style>
+        /* ==========================================================================
+           GLOBAL STYLES & RESET
+           ========================================================================== */
+        
+        /* Reset default margins, padding and set box-sizing for all elements */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Base body styles with smooth scrolling */
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            scroll-behavior: smooth; /* Enables smooth scrolling for anchor links */
+        }
+
+        /* ==========================================================================
+           NAVIGATION STYLES
+           ========================================================================== */
+        
+        /* Fixed navigation bar at the top of the page */
+        .navbar {
+            background: #2c3e50; /* Dark blue-gray background */
+            color: white;
+            padding: 1rem 0; /* Vertical padding for navbar height */
+            position: fixed; /* Stays at top when scrolling */
+            width: 100%;
+            top: 0;
+            z-index: 1000; /* High z-index to stay above other content */
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1); /* Subtle shadow below navbar */
+        }
+
+        /* Container for navigation content with max-width and center alignment */
+        .nav-container {
+            max-width: 1200px; /* Maximum width for content */
+            margin: 0 auto; /* Center horizontally */
+            padding: 0 20px; /* Horizontal padding */
+            display: flex; /* Flexbox for layout */
+            justify-content: space-between; /* Space between logo and menu */
+            align-items: center; /* Vertically center items */
+        }
+
+        /* Logo/brand styling */
+        .nav-logo {
+            font-size: 1.5rem; /* Larger font for logo */
+            font-weight: bold; /* Bold text for emphasis */
+        }
+
+        /* Navigation menu - horizontal list on desktop */
+        .nav-menu {
+            display: flex; /* Horizontal layout */
+            list-style: none; /* Remove bullet points */
+            gap: 2rem; /* Space between menu items */
+        }
+
+        /* Navigation link styling with hover effects */
+        .nav-menu a {
+            color: white; /* White text color */
+            text-decoration: none; /* Remove underline */
+            transition: color 0.3s; /* Smooth color transition on hover */
+        }
+
+        .nav-menu a:hover {
+            color: #3498db; /* Blue color on hover */
+        }
+
+        /* Hamburger menu icon - hidden on desktop, shown on mobile */
+        .hamburger {
+            display: none; /* Hidden by default */
+            flex-direction: column; /* Stack bars vertically */
+            cursor: pointer; /* Hand cursor on hover */
+        }
+
+        /* Individual bars of the hamburger icon */
+        .bar {
+            width: 25px; /* Width of each bar */
+            height: 3px; /* Height of each bar */
+            background: white; /* White color for visibility */
+            margin: 3px 0; /* Vertical spacing between bars */
+            transition: 0.3s; /* For animation when menu opens/closes */
+        }
+
+        /* ==========================================================================
+           HERO SECTION STYLES
+           ========================================================================== */
+        
+        /* Full-screen hero section with gradient background */
+        .hero {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); /* Purple gradient */
+            color: white; /* White text for contrast */
+            height: 100vh; /* Full viewport height */
+            display: flex; /* Flexbox for centering */
+            align-items: center; /* Vertically center content */
+            justify-content: center; /* Horizontally center content */
+            text-align: center; /* Center text alignment */
+        }
+
+        /* Hero content with animated elements */
+        .hero-content h1 {
+            font-size: 3rem; /* Large heading size */
+            margin-bottom: 1rem; /* Space below heading */
+            animation: fadeInUp 1s ease-out; /* Entry animation */
+        }
+
+        .hero-content p {
+            font-size: 1.2rem; /* Larger than normal text */
+            margin-bottom: 2rem; /* Space below paragraph */
+            animation: fadeInUp 1s ease-out 0.3s both; /* Delayed entry animation */
+        }
+
+        /* Call-to-action button styling */
+        .btn {
+            display: inline-block; /* Block-level with inline behavior */
+            background: #3498db; /* Blue background */
+            color: white; /* White text */
+            padding: 12px 30px; /* Internal spacing */
+            text-decoration: none; /* Remove underline */
+            border-radius: 5px; /* Rounded corners */
+            transition: background 0.3s; /* Smooth background transition */
+            animation: fadeInUp 1s ease-out 0.6s both; /* Further delayed animation */
+        }
+
+        .btn:hover {
+            background: #2980b9; /* Darker blue on hover */
+        }
+
+        /* ==========================================================================
+           SECTION STYLES
+           ========================================================================== */
+        
+        /* Base styles for all main content sections */
+        .section {
+            padding: 80px 20px; /* Top/bottom padding accounts for fixed navbar */
+            max-width: 1200px; /* Maximum content width */
+            margin: 0 auto; /* Center horizontally */
+        }
+
+        /* Section heading styles */
+        .section h2 {
+            text-align: center; /* Center the heading */
+            font-size: 2.5rem; /* Large heading size */
+            margin-bottom: 3rem; /* Space below heading */
+            color: #2c3e50; /* Dark color for readability */
+        }
+
+        /* ==========================================================================
+           ABOUT SECTION STYLES
+           ========================================================================== */
+        
+        /* Two-column layout for about section - image and text */
+        .about-content {
+            display: grid; /* Grid layout for columns */
+            grid-template-columns: 1fr 2fr; /* Image takes 1/3, text takes 2/3 */
+            gap: 3rem; /* Space between columns */
+            align-items: center; /* Vertically align items */
+        }
+
+        /* Profile image container */
+        .about-image {
+            text-align: center; /* Center the image */
+        }
+
+        /* Profile image styling - circular with border */
+        .about-image img {
+            width: 250px; /* Fixed width */
+            height: 250px; /* Fixed height for square */
+            border-radius: 50%; /* Makes image circular */
+            object-fit: cover; /* Maintains aspect ratio */
+            border: 5px solid #3498db; /* Blue border around image */
+        }
+
+        /* About text section styling */
+        .about-text h3 {
+            font-size: 1.5rem; /* Subheading size */
+            margin-bottom: 1rem; /* Space below subheading */
+            color: #2c3e50; /* Dark color for readability */
+        }
+
+        .about-text p {
+            margin-bottom: 1rem; /* Space below paragraphs */
+            line-height: 1.8; /* Increased line height for readability */
+        }
+
+        /* Skills container - flexible layout for skill tags */
+        .skills {
+            display: flex; /* Flexible layout */
+            flex-wrap: wrap; /* Allows wrapping to new lines */
+            gap: 1rem; /* Space between skill tags */
+            margin-top: 2rem; /* Space above skills section */
+        }
+
+        /* Individual skill tag styling */
+        .skill-tag {
+            background: #3498db; /* Blue background */
+            color: white; /* White text */
+            padding: 0.5rem 1rem; /* Internal padding */
+            border-radius: 20px; /* Pill-shaped tags */
+            font-size: 0.9rem; /* Slightly smaller text */
+        }
+
+        /* ==========================================================================
+           PROJECTS SECTION STYLES
+           ========================================================================== */
+        
+        /* Projects section with light background */
+        .projects {
+            background: #f8f9fa; /* Light gray background */
+        }
+
+        /* Responsive grid for project cards */
+        .project-grid {
+            display: grid; /* Grid layout */
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Responsive columns */
+            gap: 2rem; /* Space between project cards */
+            margin-top: 2rem; /* Space above project grid */
+        }
+
+        /* Individual project card styling */
+        .project-card {
+            background: white; /* White background for cards */
+            border-radius: 10px; /* Rounded corners */
+            overflow: hidden; /* Ensures rounded corners are respected */
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1); /* Drop shadow */
+            transition: transform 0.3s; /* Smooth hover effect */
+        }
+
+        /* Hover effect for project cards */
+        .project-card:hover {
+            transform: translateY(-5px); /* Lifts card on hover */
+        }
+
+        /* Project image placeholder area */
+        .project-image {
+            width: 100%; /* Full width of card */
+            height: 200px; /* Fixed height */
+            background: #ddd; /* Gray background */
+            display: flex; /* Flexbox for centering */
+            align-items: center; /* Vertically center content */
+            justify-content: center; /* Horizontally center content */
+            font-size: 3rem; /* Large emoji/icon size */
+            color: #666; /* Gray color for icons */
+        }
+
+        /* Project content area */
+        .project-content {
+            padding: 1.5rem; /* Internal padding */
+        }
+
+        .project-content h3 {
+            margin-bottom: 1rem; /* Space below project title */
+            color: #2c3e50; /* Dark color for readability */
+        }
+
+        /* Technology tags container */
+        .project-tech {
+            display: flex; /* Flexible layout */
+            flex-wrap: wrap; /* Allow wrapping */
+            gap: 0.5rem; /* Small gap between tags */
+            margin: 1rem 0; /* Vertical margin */
+        }
+
+        /* Individual technology tag styling */
+        .tech-tag {
+            background: #e9ecef; /* Light gray background */
+            color: #6c757d; /* Medium gray text */
+            padding: 0.3rem 0.8rem; /* Small padding */
+            border-radius: 15px; /* Rounded corners */
+            font-size: 0.8rem; /* Small text size */
+        }
+
+        /* Project links container */
+        .project-links {
+            display: flex; /* Horizontal layout */
+            gap: 1rem; /* Space between links */
+        }
+
+        /* Project link styling */
+        .project-links a {
+            color: #3498db; /* Blue color for links */
+            text-decoration: none; /* Remove underline */
+            font-weight: bold; /* Bold text */
+        }
+
+        .project-links a:hover {
+            text-decoration: underline; /* Add underline on hover */
+        }
+
+        /* ==========================================================================
+           CONTACT SECTION STYLES
+           ========================================================================== */
+        
+        /* Two-column layout for contact section */
+        .contact-container {
+            display: grid; /* Grid layout */
+            grid-template-columns: 1fr 1fr; /* Equal width columns */
+            gap: 3rem; /* Space between columns */
+        }
+
+        /* Contact information styling */
+        .contact-info h3 {
+            margin-bottom: 1rem; /* Space below heading */
+            color: #2c3e50; /* Dark color for readability */
+        }
+
+        /* Contact info items with icon and text */
+        .contact-info p {
+            margin-bottom: 1rem; /* Space below each item */
+            display: flex; /* Horizontal layout */
+            align-items: center; /* Vertically center items */
+            gap: 0.5rem; /* Space between emoji and text */
+        }
+
+        /* Contact form container with background */
+        .contact-form {
+            background: #f8f9fa; /* Light gray background */
+            padding: 2rem; /* Internal padding */
+            border-radius: 10px; /* Rounded corners */
+        }
+
+        /* Form field grouping */
+        .form-group {
+            margin-bottom: 1.5rem; /* Space between form fields */
+        }
+
+        /* Form label styling */
+        .form-group label {
+            display: block; /* Block-level element */
+            margin-bottom: 0.5rem; /* Space below label */
+            font-weight: bold; /* Bold text for emphasis */
+            color: #2c3e50; /* Dark color for readability */
+        }
+
+        /* Form input and textarea styling */
+        .form-group input,
+        .form-group textarea {
+            width: 100%; /* Full width of container */
+            padding: 0.8rem; /* Internal padding */
+            border: 2px solid #ddd; /* Light gray border */
+            border-radius: 5px; /* Slightly rounded corners */
+            font-size: 1rem; /* Standard font size */
+            transition: border-color 0.3s; /* Smooth focus transition */
+        }
+
+        /* Focus state for form fields */
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none; /* Remove default outline */
+            border-color: #3498db; /* Blue border on focus */
+        }
+
+        /* Textarea specific styling */
+        .form-group textarea {
+            height: 120px; /* Fixed height for message field */
+            resize: vertical; /* Only allow vertical resizing */
+        }
+
+        /* Error message styling - hidden by default */
+        .error-message {
+            color: #e74c3c; /* Red color for errors */
+            font-size: 0.9rem; /* Smaller font size */
+            margin-top: 0.5rem; /* Space above error message */
+            display: none; /* Hidden until needed */
+        }
+
+        /* Success message styling - hidden by default */
+        .success-message {
+            background: #2ecc71; /* Green background for success */
+            color: white; /* White text */
+            padding: 1rem; /* Internal padding */
+            border-radius: 5px; /* Rounded corners */
+            text-align: center; /* Centered text */
+            margin-top: 1rem; /* Space above message */
+            display: none; /* Hidden until form is successfully submitted */
+        }
+
+        /* ==========================================================================
+           FOOTER STYLES
+           ========================================================================== */
+        
+        .footer {
+            background: #2c3e50; /* Dark background matching navbar */
+            color: white; /* White text */
+            text-align: center; /* Centered text */
+            padding: 2rem 0; /* Vertical padding */
+        }
+
+        /* ==========================================================================
+           ANIMATIONS
+           ========================================================================== */
+        
+        /* Fade in and slide up animation for hero content */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0; /* Start invisible */
+                transform: translateY(30px); /* Starts 30px below final position */
+            }
+            to {
+                opacity: 1; /* End fully visible */
+                transform: translateY(0); /* Ends at normal position */
+            }
+        }
+
+        /* ==========================================================================
+           RESPONSIVE DESIGN - TABLET AND MOBILE
+           ========================================================================== */
+        
+        /* Tablet and mobile styles */
+        @media (max-width: 768px) {
+            /* Show hamburger menu on mobile */
+            .hamburger {
+                display: flex;
+            }
+
+            /* Mobile navigation menu - transforms to vertical off-canvas menu */
+            .nav-menu {
+                position: fixed;
+                left: -100%; /* Hidden off-screen by default */
+                top: 70px; /* Below the navbar */
+                flex-direction: column; /* Vertical layout */
+                background-color: #2c3e50;
+                width: 100%;
+                text-align: center;
+                transition: 0.3s; /* Smooth slide animation */
+                padding: 2rem 0;
+            }
+
+            /* Active state - slides menu into view */
+            .nav-menu.active {
+                left: 0;
+            }
+
+            /* Smaller hero title on mobile */
+            .hero-content h1 {
+                font-size: 2rem;
+            }
+
+            /* Stack about content vertically on mobile */
+            .about-content {
+                grid-template-columns: 1fr; /* Single column */
+                text-align: center;
+            }
+
+            /* Stack contact content vertically on mobile */
+            .contact-container {
+                grid-template-columns: 1fr; /* Single column */
+            }
+
+            /* Reduce section padding on mobile */
+            .section {
+                padding: 60px 20px;
+            }
+
+            /* Smaller section headings on mobile */
+            .section h2 {
+                font-size: 2rem;
+            }
+        }
+
+        /* Small mobile styles */
+        @media (max-width: 480px) {
+            /* Single column project grid on small screens */
+            .project-grid {
+                grid-template-columns: 1fr;
+            }
+
+            /* Even smaller hero title on small screens */
+            .hero-content h1 {
+                font-size: 1.8rem;
+            }
+
+            /* Reduce nav container padding on small screens */
+            .nav-container {
+                padding: 0 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- ==========================================================================
+         NAVIGATION SECTION
+         Fixed navigation bar with logo and menu items
+         ========================================================================== -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <!-- Site logo/brand -->
+            <div class="nav-logo">Portfolio</div>
+            
+            <!-- Main navigation menu -->
+            <ul class="nav-menu">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#projects">Projects</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+            
+            <!-- Mobile hamburger menu icon -->
+            <div class="hamburger">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ==========================================================================
+         HERO SECTION
+         Full-screen landing area with call-to-action
+         ========================================================================== -->
+    <section id="home" class="hero">
+        <div class="hero-content">
+            <h1>Welcome to My Portfolio</h1>
+            <p>Full Stack Developer & UI/UX Designer</p>
+            <a href="#about" class="btn">Learn More</a>
+        </div>
+    </section>
+
+    <!-- ==========================================================================
+         ABOUT SECTION
+         Personal information, skills, and introduction
+         ========================================================================== -->
+    <section id="about" class="section">
+        <h2>About Me</h2>
+        <div class="about-content">
+            <!-- Profile image column -->
+            <div class="about-image">
+                <img src="https://via.placeholder.com/250x250/3498db/ffffff?text=Photo" alt="Profile Picture">
+            </div>
+            
+            <!-- About text and skills column -->
+            <div class="about-text">
+                <h3>Hello, I'm John Doe</h3>
+                <p>I'm a passionate full-stack developer with over 5 years of experience in creating digital solutions. I specialize in modern web technologies and love turning complex problems into simple, beautiful designs.</p>
+                <p>When I'm not coding, you can find me exploring new technologies, contributing to open-source projects, or enjoying outdoor activities.</p>
+                
+                <!-- Skills tags -->
+                <div class="skills">
+                    <span class="skill-tag">JavaScript</span>
+                    <span class="skill-tag">React</span>
+                    <span class="skill-tag">Node.js</span>
+                    <span class="skill-tag">Python</span>
+                    <span class="skill-tag">MongoDB</span>
+                    <span class="skill-tag">HTML/CSS</span>
+                    <span class="skill-tag">Git</span>
+                    <span class="skill-tag">AWS</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==========================================================================
+         PROJECTS SECTION
+         Gallery of projects loaded from JSON data
+         ========================================================================== -->
+    <section id="projects" class="section projects">
+        <h2>Project Gallery</h2>
+        <!-- Project cards will be dynamically generated here -->
+        <div class="project-grid" id="projectGrid">
+            <!-- Projects will be loaded dynamically from JSON -->
+        </div>
+    </section>
+
+    <!-- ==========================================================================
+         CONTACT SECTION
+         Contact information and form for inquiries
+         ========================================================================== -->
+    <section id="contact" class="section">
+        <h2>Get In Touch</h2>
+        <div class="contact-container">
+            <!-- Contact information column -->
+            <div class="contact-info">
+                <h3>Contact Information</h3>
+                <p>📧 john.doe@email.com</p>
+                <p>📱 +1 (555) 123-4567</p>
+                <p>📍 New York, NY</p>
+                <p>💼 LinkedIn: /in/johndoe</p>
+                <p>🐙 GitHub: /johndoe</p>
+            </div>
+            
+            <!-- Contact form column -->
+            <form class="contact-form" id="contactForm">
+                <!-- Name input field -->
+                <div class="form-group">
+                    <label for="name">Name</label>
+                    <input type="text" id="name" name="name" required>
+                    <div class="error-message" id="nameError"></div>
+                </div>
+                
+                <!-- Email input field -->
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" required>
+                    <div class="error-message" id="emailError"></div>
+                </div>
+                
+                <!-- Phone number input field -->
+                <div class="form-group">
+                    <label for="phone">Phone Number</label>
+                    <input type="tel" id="phone" name="phone" required>
+                    <div class="error-message" id="phoneError"></div>
+                </div>
+                
+                <!-- Subject input field -->
+                <div class="form-group">
+                    <label for="subject">Subject</label>
+                    <input type="text" id="subject" name="subject" required>
+                    <div class="error-message" id="subjectError"></div>
+                </div>
+                
+                <!-- Message textarea field -->
+                <div class="form-group">
+                    <label for="message">Message</label>
+                    <textarea id="message" name="message" required></textarea>
+                    <div class="error-message" id="messageError"></div>
+                </div>
+                
+                <!-- Submit button -->
+                <button type="submit" class="btn">Send Message</button>
+                
+                <!-- Success message shown after successful form submission -->
+                <div class="success-message" id="successMessage">
+                    Thank you! Your message has been sent successfully.
+                </div>
+            </form>
+        </div>
+    </section>
+
+    <!-- ==========================================================================
+         FOOTER SECTION
+         Simple footer with copyright information
+         ========================================================================== -->
+    <footer class="footer">
+        <p>&copy; 2025 John Doe. All rights reserved.</p>
+    </footer>
+
+    <script>
+        /* ==========================================================================
+           PROJECT DATA (JSON)
+           Static JSON data structure containing all project information
+           ========================================================================== */
+        
+        // Array of project objects with all necessary information for portfolio display
+        const projectsData = [
+            {
+                id: 1,
+                title: "E-Commerce Platform",
+                description: "A full-stack e-commerce solution with user authentication, product management, and payment integration.",
+                technologies: ["React", "Node.js", "MongoDB", "Stripe"],
+                image: "🛒", // Using emoji as placeholder for project image
+                demoUrl: "https://demo-ecommerce.com",
+                githubUrl: "https://github.com/johndoe/ecommerce"
+            },
+            {
+                id: 2,
+                title: "Task Management App",
+                description: "A responsive task management application with drag-and-drop functionality and team collaboration features.",
+                technologies: ["Vue.js", "Express.js", "PostgreSQL", "Socket.io"],
+                image: "📋",
+                demoUrl: "https://demo-taskapp.com",
+                githubUrl: "https://github.com/johndoe/taskapp"
+            },
+            {
+                id: 3,
+                title: "Weather Dashboard",
+                description: "A beautiful weather dashboard that displays current conditions and forecasts for multiple cities.",
+                technologies: ["JavaScript", "HTML/CSS", "Weather API", "Chart.js"],
+                image: "🌤️",
+                demoUrl: "https://demo-weather.com",
+                githubUrl: "https://github.com/johndoe/weather"
+            },
+            {
+                id: 4,
+                title: "Social Media App",
+                description: "A social media platform with real-time messaging, photo sharing, and user profiles.",
+                technologies: ["React Native", "Firebase", "Redux", "Node.js"],
+                image: "📱",
+                demoUrl: "https://demo-social.com",
+                githubUrl: "https://github.com/johndoe/social"
+            },
+            {
+                id: 5,
+                title: "Portfolio Website",
+                description: "A responsive portfolio website showcasing projects and skills with modern design.",
+                technologies: ["HTML", "CSS", "JavaScript", "GSAP"],
+                image: "💼",
+                demoUrl: "https://johndoe-portfolio.com",
+                githubUrl: "https://github.com/johndoe/portfolio"
+            },
+            {
+                id: 6,
+                title: "Blog Platform",
+                description: "A content management system for bloggers with markdown support and SEO optimization.",
+                technologies: ["Next.js", "Prisma", "TailwindCSS", "Vercel"],
+                image: "✍️",
+                demoUrl: "https://demo-blog.com",
+                githubUrl: "https://github.com/johndoe/blog"
+            }
+        ];
+
+        /* ==========================================================================
+           PROJECT LOADING FUNCTION
+           Dynamically generates project cards from JSON data
+           ========================================================================== */
+        
+        /**
+         * Loads projects from JSON data and creates DOM elements
+         * This function reads the projectsData array and generates HTML cards for each project
+         */
+        function loadProjects() {
+            // Get the container where project cards will be inserted
+            const projectGrid = document.getElementById('projectGrid');
+            
+            // Loop through each project in the data array and create cards
+            projectsData.forEach(project => {
+                // Create a new div element for each project card
+                const projectCard = document.createElement('div');
+                projectCard.className = 'project-card'; // Add CSS class for styling
+                
+                // Generate HTML content for the project card using template literals
+                projectCard.innerHTML = `
+                    <div class="project-image">${project.image}</div>
+                    <div class="project-content">
+                        <h3>${project.title}</h3>
+                        <p>${project.description}</p>
+                        <div class="project-tech">
+                            ${project.technologies.map(tech => `<span class="tech-tag">${tech}</span>`).join('')}
+                        </div>
+                        <div class="project-links">
+                            <a href="${project.demoUrl}" target="_blank">Live Demo</a>
+                            <a href="${project.githubUrl}" target="_blank">GitHub</a>
+                        </div>
+                    </div>
+                `;
+                
+                // Add the completed project card to the grid container
+                projectGrid.appendChild(projectCard);
+            });
+        }
+
+        /* ==========================================================================
+           MOBILE NAVIGATION FUNCTION
+           Handles hamburger menu toggle and mobile navigation
+           ========================================================================== */
+        
+        /**
+         * Sets up mobile navigation functionality
+         * Handles hamburger menu click and closes menu when navigation links are clicked
+         */
+        function setupMobileNav() {
+            // Get hamburger menu button and navigation menu elements from DOM
+            const hamburger = document.querySelector('.hamburger');
+            const navMenu = document.querySelector('.nav-menu');
+            
+            // Add click event listener to hamburger menu for toggling
+            hamburger.addEventListener('click', () => {
+                // Toggle the 'active' class to show/hide mobile menu
+                navMenu.classList.toggle('active');
+            });
+            
+            // Close mobile menu when any navigation link is clicked
+            document.querySelectorAll('.nav-menu a').forEach(link => {
+                link.addEventListener('click', () => {
+                    // Remove 'active' class to hide mobile menu after navigation
+                    navMenu.classList.remove('active');
+                });
+            });
+        }
+
+        /* ==========================================================================
+           CONTACT FORM FUNCTION
+           Handles form validation and submission
+           ========================================================================== */
+        
+        /**
+         * Sets up contact form validation and submission handling
+         * Validates all form fields and shows appropriate error messages or success confirmation
+         */
+        function setupContactForm() {
+            // Get the contact form element from DOM
+            const form = document.getElementById('contactForm');
+            
+            // Add submit event listener to the form
+            form.addEventListener('submit', function(e) {
+                // Prevent default form submission behavior to handle with JavaScript
+                e.preventDefault();
+                
+                // Clear any existing error messages before validation
+                clearErrors();
+                
+                // Get form field values and trim whitespace for validation
+                const name = document.getElementById('name').value.trim();
+                const email = document.getElementById('email').value.trim();
+                const phone = document.getElementById('phone').value.trim(); // Get phone number value
+                const subject = document.getElementById('subject').value.trim();
+                const message = document.getElementById('message').value.trim();
+                
+                // Flag to track overall form validity
+                let isValid = true;
+                
+                // Validate name field - must be at least 2 characters
+                if (name.length < 2) {
+                    showError('nameError', 'Name must be at least 2 characters long');
+                    isValid = false;
+                }
+                
+                // Validate email field using regular expression for proper email format
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(email)) {
+                    showError('emailError', 'Please enter a valid email address');
+                    isValid = false;
+                }
+                
+                // Validate phone field using regular expression for phone number format
+                const phoneRegex = /^[\+]?[1-9][\d]{0,15}$/; // Allows optional + and 1-16 digits
+                const cleanPhone = phone.replace(/[\s\-\(\)]/g, ''); // Remove common formatting characters
+                if (!phoneRegex.test(cleanPhone)) {
+                    showError('phoneError', 'Please enter a valid phone number');
+                    isValid = false;
+                }
+                
+                // Validate subject field - must be at least 5 characters
+                if (subject.length < 5) {
+                    showError('subjectError', 'Subject must be at least 5 characters long');
+                    isValid = false;
+                }
+                
+                // Validate message field - must be at least 10 characters
+                if (message.length < 10) {
+                    showError('messageError', 'Message must be at least 10 characters long');
+                    isValid = false;
+                }
+                
+                // If all validations pass, process the form submission
+                if (isValid) {
+                    // Log form data to console (in real app, this would send to server)
+                    console.log('Form submitted:', { name, email, phone, subject, message });
+                    
+                    // Show success message to user
+                    document.getElementById('successMessage').style.display = 'block';
+                    
+                    // Reset the form to clear all fields
+                    form.reset();
+                    
+                    // Hide success message after 5 seconds automatically
+                    setTimeout(() => {
+                        document.getElementById('successMessage').style.display = 'none';
+                    }, 5000);
+                }
+            });
+        }
+
+        /* ==========================================================================
+           UTILITY FUNCTIONS
+           Helper functions for error handling and user feedback
+           ========================================================================== */
+        
+        /**
+         * Shows error message for a specific form field
+         * @param {string} elementId - ID of the error message element to show
+         * @param {string} message - Error message text to display
+         */
+        function showError(elementId, message) {
+            const errorElement = document.getElementById(elementId);
+            errorElement.textContent = message; // Set the error message text
+            errorElement.style.display = 'block'; // Make the error message visible
+        }
+
+        /**
+         * Clears all error messages from the form
+         * Hides all elements with 'error-message' class and clears their content
+         */
+        function clearErrors() {
+            const errorElements = document.querySelectorAll('.error-message');
+            errorElements.forEach(element => {
+                element.style.display = 'none'; // Hide the error message
+                element.textContent = ''; // Clear the error message text
+            });
+        }
+
+        /* ==========================================================================
+           SMOOTH SCROLLING FUNCTION
+           Enables smooth scrolling for anchor links in navigation
+           ========================================================================== */
+        
+        /**
+         * Sets up smooth scrolling for all anchor links
+         * Overrides default jump behavior with smooth scrolling animation
+         */
+        function setupSmoothScrolling() {
+            // Select all links that start with '#' (anchor links for internal navigation)
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function(e) {
+                    // Prevent default link behavior (instant jump)
+                    e.preventDefault();
+                    
+                    // Find the target element using the href attribute
+                    const target = document.querySelector(this.getAttribute('href'));
+                    
+                    // If target exists, scroll to it smoothly
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth', // Smooth scrolling animation
+                            block: 'start' // Align to top of viewport
+                        });
+                    }
+                });
+            });
+        }
+
+        /* ==========================================================================
+           INITIALIZATION FUNCTION
+           Runs when DOM is fully loaded to set up all functionality
+           ========================================================================== */
+        
+        /**
+         * Initialize all functionality when DOM is ready
+         * This is the main entry point that sets up the entire application
+         */
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load projects from JSON data into the DOM
+            loadProjects();
+            
+            // Set up mobile navigation functionality
+            setupMobileNav();
+            
+            // Set up contact form validation and handling
+            setupContactForm();
+            
+            // Set up smooth scrolling for navigation links
+            setupSmoothScrolling();
+        });
+
+        /* ==========================================================================
+           SCROLL EFFECTS
+           Dynamic navbar styling based on scroll position
+           ========================================================================== */
+        
+        /**
+         * Add scroll effect to navbar for better visual feedback
+         * Changes navbar background opacity when user scrolls down the page
+         */
+        window.addEventListener('scroll', function() {
+            const navbar = document.querySelector('.navbar');
+            
+            // If user has scrolled more than 50px from top of page
+            if (window.scrollY > 50) {
+                // Make navbar slightly transparent for better visual effect
+                navbar.style.background = 'rgba(44, 62, 80, 0.95)';
+            } else {
+                // Keep navbar solid when at top of page
+                navbar.style.background = '#2c3e50';
+            }
+        });
+    </script>
+</body>
+</html>
